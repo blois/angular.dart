@@ -402,7 +402,7 @@ class ScopeStats {
     'Process: ${_stat(digestProcessStopwatch)}';
 }
 
-
+@NgInjectableService()
 class RootScope extends Scope {
   static final STATE_APPLY = 'apply';
   static final STATE_DIGEST = 'digest';
@@ -829,6 +829,7 @@ class _FunctionChain {
   }
 }
 
+@NgInjectableService()
 class AstParser {
   final Parser _parser;
   int _id = 0;

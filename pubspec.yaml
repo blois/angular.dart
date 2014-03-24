@@ -14,9 +14,11 @@ environment:
 dependencies:
   analyzer: '>=0.13.0 <0.14.0'
   browser: '>=0.8.7 <0.10.0'
-  code_transformers: '>=0.0.1 <0.1.0'
+  code_transformers: '>=0.1.0 <0.2.0'
   collection: '>=0.9.1 <1.0.0'
-  di: '>=0.0.32 <0.1.0'
+  di:
+    git:
+      url: git://github.com/angular/di.dart.git
   html5lib: '>=0.8.7 <0.10.0'
   intl: '>=0.8.7 <0.10.0'
   perf_api: '>=0.0.8 <0.1.0'
@@ -25,13 +27,3 @@ dependencies:
 dev_dependencies:
   benchmark_harness: '>=1.0.0'
   unittest: '>=0.8.7 <0.10.0'
-
-dependency_overrides:
-  di:
-    git:
-      url: git://github.com/blois/di.dart.git
-      ref: angular_tweaks
-  code_transformers: 0.0.1-dev.3
-  analyzer: '>=0.13.0-dev <0.14.0'
-
-

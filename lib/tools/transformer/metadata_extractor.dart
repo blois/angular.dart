@@ -251,10 +251,19 @@ class AnnotationExtractor {
                 annotation.parent.element);
             return false;
           }
-          if (element is ConstructorElement &&
-              !element.enclosingElement.isPublic) {
+          if (element is! ConstructorElement) {
+            // Only keeping constructor elements.
+            return false;
+          }
+          ConstructorElement ctor = element;
+          var cls = ctor.enclosingElement;
+          if (!cls.isPublic) {
             warn('Annotation $annotation is not public.',
                 annotation.parent.element);
+            return false;
+          }
+          // Skip all non-Ng* Attributes.
+          if (!cls.name.startsWith('Ng')) {
             return false;
           }
           return true;

@@ -28,7 +28,6 @@ main() {
                 import 'package:angular/angular.dart';
 
                 @NgDirective(selector: r'[*=/{{.*}}/]')
-                @proxy
                 class Engine {
                   @NgOneWay('another-expression')
                   String anotherExpression;
@@ -55,7 +54,6 @@ main() {
                 '\'callback\': \'&callback\', '
                 '\'two-way-stuff\': \'<=>twoWayStuff\''
                 '})',
-              'proxy',
             ]
           });
     });
@@ -249,10 +247,10 @@ main() {
             'a|web/main.dart': '''
                 import 'package:angular/angular.dart';
 
-                @Foo
+                @NgFoo()
                 class Engine {}
 
-                @NgDirective(publishTypes: const [Foo])
+                @NgDirective(publishTypes: const [NgFoo])
                 class Car {}
 
                 main() {}
@@ -263,18 +261,15 @@ main() {
             'import \'package:angular/angular.dart\' as import_1;',
           ],
           classes: {
-            'import_0.Engine': [
-              'null',
-            ],
             'import_0.Car': [
               'null',
             ]
           },
           messages: [
-            'warning: Unable to serialize annotation @Foo. '
-                '(web/main.dart 2 16)',
+            // 'warning: Unable to serialize annotation @NgFoo. '
+            //     '(web/main.dart 2 16)',
             'warning: Unable to serialize annotation '
-                '@NgDirective(publishTypes: const [Foo]). '
+                '@NgDirective(publishTypes: const [NgFoo]). '
                 '(web/main.dart 5 16)',
           ]);
     });
@@ -440,14 +435,14 @@ main() {
             'a|web/main.dart': '''
                 import 'package:angular/angular.dart';
 
-                @Foo.bar()
-                @Foo._private()
+                @NgFoo.bar()
+                @NgFoo._private()
                 class Engine {
                 }
 
-                class Foo {
-                  const Foo.bar();
-                  const Foo._private();
+                class NgFoo {
+                  const NgFoo.bar();
+                  const NgFoo._private();
                 }
 
                 main() {}
@@ -458,13 +453,33 @@ main() {
           ],
           classes: {
             'import_0.Engine': [
-              '''const import_0.Foo.bar()''',
+              '''const import_0.NgFoo.bar()''',
             ]
           },
           messages: [
-            'warning: Annotation @Foo._private() is not public. '
+            'warning: Annotation @NgFoo._private() is not public. '
                 '(web/main.dart 2 16)',
           ]);
+    });
+
+    it('skips non-Ng* annotations', () {
+      return generates(phases,
+          inputs: {
+            'angular|lib/angular.dart': libAngular,
+            'a|web/main.dart': '''
+                import 'package:angular/angular.dart';
+
+                @proxy
+                @Foo()
+                class Engine {}
+
+                class Foo {}
+
+                main() {}
+                ''',
+          },
+          imports: [],
+          classes: {});
     });
   });
 }

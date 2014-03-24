@@ -34,7 +34,7 @@ class ParserGetterSetter {
   final ParserBackend backend;
   ParserGetterSetter(this.parser, this.backend);
 
-  generateParser(List<String> exprs) {
+  generateParser(List<String> exprs, StringSink sink) {
     exprs.forEach((expr) {
       try {
         parser(expr);
@@ -44,7 +44,7 @@ class ParserGetterSetter {
     });
 
     DartGetterSetterGen backend = this.backend;
-    print(generateClosureMap(backend.properties, backend.calls));
+    sink.write(generateClosureMap(backend.properties, backend.calls));
   }
 
   generateClosureMap(Set<String> properties, Map<String, Set<int>> calls) {

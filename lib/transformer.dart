@@ -41,12 +41,7 @@ TransformOptions _parseSettings(Map args) {
   annotations.addAll(_readStringListValue(args, 'injectable_annotations'));
 
   // List of types which are otherwise not indicated as being injectable.
-  // Should all of these have @NgInjectableService?
   var injectedTypes = [
-      'angular.core.AstParser',
-      'angular.core.RootScope',
-      'angular.core.dom.NgAnimate',
-      'angular.core.dom.NgElement',
       'perf_api.Profiler',
   ];
   injectedTypes.addAll(_readStringListValue(args, 'injected_types'));

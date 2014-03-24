@@ -8,7 +8,6 @@ import 'package:di/di.dart';
 import 'package:di/dynamic_injector.dart';
 import 'package:intl/intl.dart';
 
-import '../gen/generated_functions.dart' as generated_functions;
 import '../gen/generated_getter_setter.dart' as generated_getter_setter;
 
 main() {
