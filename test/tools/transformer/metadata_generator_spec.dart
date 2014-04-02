@@ -402,6 +402,32 @@ main() {
           });
     });
 
+    it('should reference static methods', () {
+      return generates(phases,
+          inputs: {
+            'angular|lib/angular.dart': libAngular,
+            'a|web/main.dart': '''
+                import 'package:angular/angular.dart';
+
+                @NgDirective(module: Engine.module)
+                class Engine {
+                  static module() => null;
+                }
+
+                main() {}
+                ''',
+          },
+          imports: [
+            'import \'main.dart\' as import_0;',
+            'import \'package:angular/angular.dart\' as import_1;',
+          ],
+          classes: {
+            'import_0.Engine': [
+              'const import_1.NgDirective(module: import_0.Engine.module)'
+            ]
+          });
+    });
+
     it('should not extract private annotations', () {
       return generates(phases,
           inputs: {
@@ -541,14 +567,15 @@ const String footer = '''
 
 
 const String libAngular = '''
-library angular.core;
+library angular.core_internal;
 
 class NgAnnotation {
   NgAnnotation({map: const {}});
 }
 
 class NgDirective extends NgAnnotation {
-  const NgDirective({selector, publishTypes, map, visibility}) : super(map: map);
+  const NgDirective({selector, publishTypes, map, visibility, module}) :
+      super(map: map);
 
   static const int CHILDREN_VISIBILITY = 1;
 }

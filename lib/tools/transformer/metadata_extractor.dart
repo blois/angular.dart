@@ -177,6 +177,12 @@ class _AnnotationWriter {
           return true;
         }
       }
+
+      if (element is MethodElement) {
+        var cls = element.enclosingElement;
+        sink.write('${prefixes[cls.library]}${cls.name}.${element.name}');
+        return true;
+      }
     }
     if (expression is BooleanLiteral || expression is DoubleLiteral ||
         expression is IntegerLiteral || expression is NullLiteral) {
@@ -193,11 +199,11 @@ class AnnotationExtractor {
   final AssetId outputId;
 
   static const List<String> _angularAnnotationNames = const [
-    'angular.core.NgAttr',
-    'angular.core.NgOneWay',
-    'angular.core.NgOneWayOneTime',
-    'angular.core.NgTwoWay',
-    'angular.core.NgCallback'
+    'angular.core_internal.NgAttr',
+    'angular.core_internal.NgOneWay',
+    'angular.core_internal.NgOneWayOneTime',
+    'angular.core_internal.NgTwoWay',
+    'angular.core_internal.NgCallback'
   ];
 
   static const Map<String, String> _annotationToMapping = const {
@@ -222,7 +228,7 @@ class AnnotationExtractor {
       }
       _annotationElements.add(type.unnamedConstructor);
     }
-    ngAnnotationType = resolver.getType('angular.core.NgAnnotation');
+    ngAnnotationType = resolver.getType('angular.core_internal.NgAnnotation');
     if (ngAnnotationType == null) {
       logger.warning('Unable to resolve NgAnnotation, '
           'skipping member annotations.');

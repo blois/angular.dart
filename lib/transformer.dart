@@ -34,10 +34,10 @@ TransformOptions _parseSettings(Map args) {
   // Default angular annotations for injectable types
   var annotations = [
       'angular.core.service.NgInjectableService',
-      'angular.core.NgDirective',
-      'angular.core.NgController',
-      'angular.core.NgComponent',
-      'angular.core.NgFilter'];
+      'angular.core_internal.NgDirective',
+      'angular.core_internal.NgController',
+      'angular.core_internal.NgComponent',
+      'angular.core_internal.NgFilter'];
   annotations.addAll(_readStringListValue(args, 'injectable_annotations'));
 
   // List of types which are otherwise not indicated as being injectable.
