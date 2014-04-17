@@ -139,50 +139,28 @@ class DirectiveMetadataCollectingAstVisitor extends RecursiveAstVisitor {
     super.visitMethodInvocation(node);
   }
 
-  call(CompilationUnit cu) {
-    cu.declarations.forEach((CompilationUnitMember declaration) {
-      // We only care about classes.
-      if (declaration is! ClassDeclaration) return;
-      ClassDeclaration clazz = declaration;
-      // Check class annotations for presense of Component/Decorator.
-      DirectiveMetadata meta;
-      clazz.metadata.forEach((Annotation ann) {
-        if (ann.arguments == null) return; // Ignore non-class annotations.
-        // TODO(pavelj): this is not a safe check for the type of the
-        // annotations, but good enough for now.
-        if (ann.name.name != 'Component'
-            && ann.name.name != 'Decorator') return;
+  visitClassDeclaration(ClassDeclaration clazz) {
+    // Check class annotations for presense of Component/Decorator.
+    clazz.metadata.forEach((Annotation ann) {
+      if (ann.arguments == null) return; // Ignore non-class annotations.
+      // TODO(pavelj): this is not a safe check for the type of the
+      // annotations, but good enough for now.
+      if (ann.name.name != 'Component'
+          && ann.name.name != 'Decorator') return;
 
-        bool isComponent = ann.name.name == 'Component';
+      bool isComponent = ann.name.name == 'Component';
 
-        meta = new DirectiveMetadata()
-          ..className = clazz.name.name
-          ..type = isComponent ? COMPONENT : DIRECTIVE;
-        metadata.add(meta);
+      var meta = new DirectiveMetadata()
+        ..className = clazz.name.name
+        ..type = isComponent ? COMPONENT : DIRECTIVE;
+      metadata.add(meta);
 
-        ann.arguments.arguments.forEach((Expression arg) {
-          if (arg is NamedExpression) {
-            NamedExpression namedArg = arg;
-            var paramName = namedArg.name.label.name;
-            if (paramName == 'selector') {
-              meta.selector = assertString(namedArg.expression).stringValue;
-            }
-            if (paramName == 'template') {
-              meta.template = assertString(namedArg.expression).stringValue;
-            }
-            if (paramName == 'map') {
-              MapLiteral map = namedArg.expression;
-              map.entries.forEach((MapLiteralEntry entry) {
-                meta.attributeMappings[assertString(entry.key).stringValue] =
-                    assertString(entry.value).stringValue;
-              });
-            }
-            if (paramName == 'exportExpressions') {
-              meta.exportExpressions = getStringValues(namedArg.expression);
-            }
-            if (paramName == 'exportExpressionAttrs') {
-              meta.exportExpressionAttrs = getStringValues(namedArg.expression);
-            }
+      ann.arguments.arguments.forEach((Expression arg) {
+        if (arg is NamedExpression) {
+          NamedExpression namedArg = arg;
+          var paramName = namedArg.name.label.name;
+          if (paramName == 'selector') {
+            meta.selector = assertString(namedArg.expression).stringValue;
           }
           if (paramName == 'template') {
             meta.template = assertString(namedArg.expression).stringValue;
@@ -200,12 +178,10 @@ class DirectiveMetadataCollectingAstVisitor extends RecursiveAstVisitor {
           if (paramName == 'exportExpressionAttrs') {
             meta.exportExpressionAttrs = getStringValues(namedArg.expression);
           }
-        });
+        }
       });
-    });
 
-    // Check fields/getters/setter for presense of attr mapping annotations.
-    if (meta != null) {
+      // Check fields/getters/setter for presense of attr mapping annotations.
       clazz.members.forEach((ClassMember member) {
         if (member is FieldDeclaration ||
             (member is MethodDeclaration &&
@@ -230,8 +206,7 @@ class DirectiveMetadataCollectingAstVisitor extends RecursiveAstVisitor {
           });
         }
       });
-    }
-
+    });
     return super.visitClassDeclaration(clazz);
   }
 }
